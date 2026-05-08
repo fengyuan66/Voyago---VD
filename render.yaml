@@ -16,6 +16,12 @@ services:
         sync: false
       - key: SUPABASE_STATE_TABLE
         value: voyago_state
+      - key: HACKCLUB_API_KEY
+        sync: false
+      - key: HACKCLUB_BASE_URL
+        value: https://ai.hackclub.com/proxy/v1
+      - key: HACKCLUB_MODEL
+        value: gpt-4o-mini
 
   - type: web
     name: transiter-api
@@ -32,3 +38,5 @@ services:
         value: auto
       - key: TRANSITER_CORS_ORIGINS
         value: "*"
+      - key: TRANSITER_WALKING_STRATEGY
+        value: fallback

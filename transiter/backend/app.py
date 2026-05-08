@@ -65,8 +65,13 @@ TRANSITER_ROUTER_MODE = os.getenv("TRANSITER_ROUTER_MODE", "auto").strip().lower
 TRANSITER_OSRM_BASE_URL = os.getenv("TRANSITER_OSRM_BASE_URL", "https://router.project-osrm.org").rstrip("/")
 FALLBACK_SPEED_KPH = {
     "auto": 35.0,
+    "driving": 35.0,
     "pedestrian": 5.0,
+    "walking": 5.0,
+    "bicycle": 16.0,
+    "cycling": 16.0,
 }
+TRANSITER_WALKING_STRATEGY = os.getenv("TRANSITER_WALKING_STRATEGY", "fallback").strip().lower() or "fallback"
 
 BASE_PATH = Path(__file__).resolve().parent.parent
 VALHALLA_CONFIG_PATH = BASE_PATH / "valhalla" / "valhalla.json"
@@ -129,9 +134,9 @@ def _make_locations(points: list[Location], with_search_hints: bool):
 
 def _costing_to_osrm_profile(costing: str) -> str:
     normalized = (costing or "auto").strip().lower()
-    if normalized == "pedestrian":
+    if normalized in ("pedestrian", "walking"):
         return "walking"
-    if normalized == "bicycle":
+    if normalized in ("bicycle", "cycling"):
         return "cycling"
     return "driving"
 
@@ -222,6 +227,7 @@ def _route_with_fallback(req: RouteRequest):
 @app.post("/route")
 def route(req: RouteRequest):
     errors = []
+    normalized_costing = (req.costing or "auto").strip().lower()
 
     if actor is not None:
         attempts = [
@@ -247,6 +253,16 @@ def route(req: RouteRequest):
                 return _decode_actor_result(result)
             except Exception as error:
                 errors.append(f"valhalla: {error}")
+
+    if (
+        normalized_costing in ("pedestrian", "walking")
+        and TRANSITER_WALKING_STRATEGY == "fallback"
+        and TRANSITER_ROUTER_MODE in ("auto", "osrm", "fallback")
+    ):
+        try:
+            return _route_with_fallback(req)
+        except Exception as error:
+            errors.append(f"walking-fallback: {error}")
 
     if TRANSITER_ROUTER_MODE in ("auto", "osrm"):
         try:

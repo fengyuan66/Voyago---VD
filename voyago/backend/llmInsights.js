@@ -5,13 +5,7 @@ const HACKCLUB_MODEL = process.env.HACKCLUB_MODEL ?? "gpt-4o-mini";
 
 function canRunInsights(userProfile) {
   const ratingsCount = userProfile.totalRatings ?? 0;
-  if (ratingsCount < 6) {
-    return false;
-  }
-  if (ratingsCount % 5 !== 0) {
-    return false;
-  }
-  return true;
+  return ratingsCount >= 6;
 }
 
 function buildPrompt(userProfile) {

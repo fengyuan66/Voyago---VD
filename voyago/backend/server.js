@@ -167,13 +167,15 @@ async function maybeRefreshInsights(userProfile) {
   try {
     const insights = await maybeGenerateInsights(userProfile);
     if (!insights) {
-      return;
+      return null;
     }
     userProfile.insights = insights;
     userProfile.lastInsightAt = new Date().toISOString();
     persistUserProfiles();
+    return insights;
   } catch {
     // Non-critical path; ignore LLM failures for reliability.
+    return null;
   }
 }
 
@@ -202,6 +204,7 @@ const server = http.createServer(async (request, response) => {
       restaurants: getCatalogCount(),
       users: Object.keys(userProfiles).length,
       dataSource: "backend/data/catalog.json",
+      llmConfigured: Boolean(process.env.HACKCLUB_API_KEY),
     });
     return;
   }
@@ -293,13 +296,13 @@ const server = http.createServer(async (request, response) => {
       const userProfile = ensureProfile(userId);
       applyRating({ userProfile, restaurant, rating });
       persistUserProfiles();
-      void maybeRefreshInsights(userProfile);
+      const refreshedInsights = await maybeRefreshInsights(userProfile);
 
       sendJson(response, 200, {
         ok: true,
         totalRatings: userProfile.totalRatings,
         profileSummary: summarizeTopTagPrefs(userProfile, 5),
-        insights: userProfile.insights,
+        insights: refreshedInsights ?? userProfile.insights ?? null,
       });
     } catch (error) {
       sendJson(response, 400, { error: error.message });
