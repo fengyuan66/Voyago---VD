@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://voyago-api.onrender.com/api/:path*"
+      "destination": "https://voyago-api-pzkm.onrender.com/api/:path*"
     },
     {
       "source": "/transiter-api/:path*",
