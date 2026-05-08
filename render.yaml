@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: voyago-api
+    runtime: node
+    rootDir: voyago
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm run api
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_STATE_TABLE
+        value: voyago_state
+
+  - type: web
+    name: transiter-api
+    runtime: python
+    rootDir: transiter/backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: TRANSITER_ROUTER_MODE
+        value: auto
+      - key: TRANSITER_CORS_ORIGINS
+        value: "*"

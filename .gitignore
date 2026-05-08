@@ -1,0 +1,4 @@
+transiter/valhalla/custom_files/*.osm.pbf
+transiter/valhalla/tiles/
+transiter/valhalla/transit_tiles/
+transiter/valhalla/gtfs_feeds/

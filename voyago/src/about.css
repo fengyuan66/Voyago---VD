@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.about {
+    position: relative;
+    padding: 6rem 10% 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    min-height: auto;
+}
+
+.about h1 {
+    font-size: 4vh;
+    margin: 0;
+    max-width: none;
+    font-family: 'Inter', sans-serif;
+    color: #0099ff;
+    font-weight: 800;
+    
+}
+
+.about h2 {
+    font-size: 3vh;
+    margin: 0;
+    max-width: none;
+    font-family: 'Inter', sans-serif;
+    color: #0099ff;
+    font-weight: 400;
+}
+
+.about p {
+    font-size: 2vh;
+    margin-top: 2rem;
+    max-width: 700px;
+    font-family: 'Inter', sans-serif;
+    color: #0099ff;
+    font-weight: 100;
+}
+
+.who-are-we {
+
+    z-index: 1;
+}
+
+.who-are-we h1 {
+    margin-top: 1vh;
+}
+
+
+.voyago-intro {
+    position: static;   /* remove absolute positioning */
+    top: auto;
+    left: auto;
+    
+}
+
+.voyago-intro ul {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5vh;
+    list-style: none;
+}
+
+.voyago-intro img{
+  width: 100%;
+  aspect-ratio: 12 / 12;
+  max-height: 15vh;       
+  overflow: hidden;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+}
